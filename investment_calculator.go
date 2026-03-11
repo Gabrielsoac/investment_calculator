@@ -27,7 +27,7 @@ func main() {
 	fmt.Print("Enter your invesmentAmount: ")
 	fmt.Scan(&investmentAmount);
 	
-	fmt.Print("Enter yout expected return rate, example: '5.5': ");
+	fmt.Print("Enter your expected return rate, example: '5.5': ");
 	fmt.Scan(&expectedReturnRate);
 	
 	fmt.Print("Enter the period in periodInYears: ");
