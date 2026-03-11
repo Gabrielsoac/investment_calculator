@@ -21,21 +21,40 @@ func calculateInvestment (
 }
 
 func main() {
-	checkMark := rune(0x2705);
-	investmentAmount, expectedReturnRate, periodInYears := 0.0, 0.0, 0.0;
-	
-	fmt.Print("Enter your invesmentAmount: ")
-	fmt.Scan(&investmentAmount);
-	
-	fmt.Print("Enter your expected return rate, example: '5.5': ");
-	fmt.Scan(&expectedReturnRate);
-	
-	fmt.Print("Enter the period in periodInYears: ");
-	fmt.Scan(&periodInYears);
+	var choice = 0;
 
-	calculateInvestment(investmentAmount, expectedReturnRate, periodInYears);
+	for (choice != 3) {
+		fmt.Println("(1) Profit Calculator");
+		fmt.Println("(2) Investment Calculator");
+		fmt.Println("(3) Exit");
 
-	fmt.Println(string(checkMark));
+		fmt.Print("Enter your choice: ");
+		fmt.Scan(&choice);
+
+		if(choice == 2){
+			checkMark := rune(0x2705);
+			investmentAmount, expectedReturnRate, periodInYears := 0.0, 0.0, 0.0;
+			
+			fmt.Print("Enter your invesmentAmount: ")
+			fmt.Scan(&investmentAmount);
+			
+			fmt.Print("Enter your expected return rate, example: '5.5': ");
+			fmt.Scan(&expectedReturnRate);
+			
+			fmt.Print("Enter the period in periodInYears: ");
+			fmt.Scan(&periodInYears);
+		
+			calculateInvestment(investmentAmount, expectedReturnRate, periodInYears);
+		
+			fmt.Println(string(checkMark));
+			choice = 0;
+		}
+
+		if(choice == 3){
+			println("Goodbye :)");
+		}
+	}
+	
 
 	
 }
