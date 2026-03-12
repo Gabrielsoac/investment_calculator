@@ -1,24 +1,40 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"math"
 )
 
 func calculateInvestment (
 	investmentAmount float64,
 	expectedReturnRate float64,
-	periodInYears float64) {
+	periodInYears float64) (float64, error) {
 		
+		if investmentAmount <= 0 {
+			return 0.0, errors.New("investment amount cannot be zero");
+		}
+		
+		if expectedReturnRate <= 0 {
+			return 0.0, errors.New("expected return rate cannot be zero")
+		}
+		
+		if periodInYears <= 0 {
+			return 0.0, errors.New("period in years cannot be zero")
+		}
+
 		const inflationRate float64 = 2.5;
 		
 		futureValue := investmentAmount * math.Pow(1 + expectedReturnRate / 100, periodInYears)
 		futureRealValue := futureValue / math.Pow(1 + inflationRate / 100, periodInYears);
 		
-		fmt.Printf("investment amount: %.2f\n", investmentAmount);
-		fmt.Printf("Future value: %.2f\n", futureValue);
-		fmt.Printf("Future value with inflationRate: %.2f\n", futureRealValue);
+		fmt.Printf("investment amount: R$%.2f\n", investmentAmount);
+		fmt.Printf("Future value: R$%.2f\n", futureValue);
+		fmt.Printf("Future value with inflationRate: R$%.2f\n", futureRealValue);
 		println("####### END #########")
+
+		return 0, nil;
 }
 
 func profitCalculator(
@@ -30,16 +46,24 @@ func profitCalculator(
 	var profit = ebt * (1 - taxRate / 100 );
 	var ratio = ebt / profit;
 
-	fmt.Printf("Your ebt: %.2f\n", ebt);
-	fmt.Printf("Your profit: %.2f\n", profit);
-	fmt.Printf("Your ratio: %.2f\n", ratio);
-	println("####### END #########")
+	fmt.Printf("\n####### PROFIT RESULT #########\nYour ebt: R$%.2f\nYour profit: R$%.2f\nYour ratio: R$%.2f\n", ebt, profit, ratio,
+	);
+}
+
+func getFloatValue(fieldName string) (value float64, err error) {
+	fmt.Printf("Enter %s value: ", fieldName);
+	fmt.Scan(&value);
+	if value <= 0 {
+		err = errors.New(fieldName + " cannot be zero or negative value ❌");
+	}
+	return;
 }
 
 func main() {
 	var choice = 0;
 
 	for (choice != 3) {
+		fmt.Println("\n####### MENU #######");
 		fmt.Println("(1) Profit Calculator");
 		fmt.Println("(2) Investment Calculator");
 		fmt.Println("(3) Exit");
@@ -48,16 +72,22 @@ func main() {
 		fmt.Scan(&choice);
 
 		if(choice == 1){
-			var renenue, expenses, taxRate float64;
-			
-			fmt.Print("Enter your revenue: ")
-			fmt.Scan(&renenue);
-			
-			fmt.Print("Enter your expenses: ");
-			fmt.Scan(&expenses);
-			
-			fmt.Print("Enter the tax rate: ");
-			fmt.Scan(&taxRate);
+			var err error;
+			renenue, err := getFloatValue("reneue");
+			if err != nil {
+				log.Print(err.Error());
+				continue;
+			}
+			expenses, err := getFloatValue("expenses");
+			if err != nil {
+				log.Print(err.Error());
+				continue;
+			}
+			taxRate, err := getFloatValue("tax rate");
+			if err != nil {
+				log.Print(err.Error());
+				continue;
+			}
 			
 			profitCalculator(renenue, expenses, taxRate);
 		}
@@ -75,14 +105,23 @@ func main() {
 			fmt.Print("Enter the period in periodInYears: ");
 			fmt.Scan(&periodInYears);
 		
-			calculateInvestment(investmentAmount, expectedReturnRate, periodInYears);
-		
+			var value, err = calculateInvestment(investmentAmount, expectedReturnRate, periodInYears);
+			
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+
+			if value == 0 {
+				println("ok")
+			}
+
 			fmt.Println(string(checkMark));
 			choice = 0;
 		}
 
 		if(choice == 3){
-			println("Goodbye :)");
+			goodbyeMessage := fmt.Sprintln("Goodbye :)");
+			fmt.Print(goodbyeMessage);
 		}
 	}
 }
