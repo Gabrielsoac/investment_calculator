@@ -7,34 +7,27 @@ import (
 	"math"
 )
 
+func calculateFutureValue (investmentAmount float64, expectedReturnRate float64, periodInYears float64) float64 {
+	 return investmentAmount * math.Pow(1 + expectedReturnRate / 100, periodInYears);
+}
+
+func calculateRealFutureValue (futureValue float64, periodInYears float64) float64 {
+	const inflationRate float64 = 2.5;
+	return futureValue / math.Pow(1 + inflationRate / 100, periodInYears);
+
+}
+
 func calculateInvestment (
 	investmentAmount float64,
 	expectedReturnRate float64,
-	periodInYears float64) (float64, error) {
+	periodInYears float64) {
 		
-		if investmentAmount <= 0 {
-			return 0.0, errors.New("investment amount cannot be zero");
-		}
-		
-		if expectedReturnRate <= 0 {
-			return 0.0, errors.New("expected return rate cannot be zero")
-		}
-		
-		if periodInYears <= 0 {
-			return 0.0, errors.New("period in years cannot be zero")
-		}
-
-		const inflationRate float64 = 2.5;
-		
-		futureValue := investmentAmount * math.Pow(1 + expectedReturnRate / 100, periodInYears)
-		futureRealValue := futureValue / math.Pow(1 + inflationRate / 100, periodInYears);
-		
-		fmt.Printf("investment amount: R$%.2f\n", investmentAmount);
-		fmt.Printf("Future value: R$%.2f\n", futureValue);
-		fmt.Printf("Future value with inflationRate: R$%.2f\n", futureRealValue);
-		println("####### END #########")
-
-		return 0, nil;
+	futureValue := calculateFutureValue(investmentAmount, expectedReturnRate, periodInYears);
+	futureRealValue := calculateRealFutureValue(futureValue, periodInYears);
+	
+	fmt.Printf("investment amount: R$%.2f\n", investmentAmount);
+	fmt.Printf("Future value: R$%.2f\n", futureValue);
+	fmt.Printf("Future value with inflationRate: R$%.2f\n", futureRealValue);
 }
 
 func profitCalculator(
@@ -42,12 +35,24 @@ func profitCalculator(
 	expenses float64,
 	taxRate float64) {
 
-	var ebt float64 = revenue - expenses;
-	var profit = ebt * (1 - taxRate / 100 );
-	var ratio = ebt / profit;
+	var ebt float64 = calculateEbt(revenue, expenses); 
+	var profit = calculateProfit(ebt, taxRate);
+	var ratio = calculateRatio(ebt, profit);
 
 	fmt.Printf("\n####### PROFIT RESULT #########\nYour ebt: R$%.2f\nYour profit: R$%.2f\nYour ratio: R$%.2f\n", ebt, profit, ratio,
 	);
+}
+
+func calculateEbt (revenue float64, expenses float64) (ebt float64) {
+	return revenue - expenses;
+}
+
+func calculateProfit (ebt float64, taxRate float64) (profit float64) {
+	return ebt * (1 - taxRate / 100);
+}
+
+func calculateRatio (ebt float64, profit float64) (ratio float64) {
+	return ebt / profit;
 }
 
 func getFloatValue(fieldName string) (value float64, err error) {
@@ -94,26 +99,25 @@ func main() {
 
 		if(choice == 2){
 			checkMark := rune(0x2705);
-			investmentAmount, expectedReturnRate, periodInYears := 0.0, 0.0, 0.0;
-			
-			fmt.Print("Enter your invesmentAmount: ")
-			fmt.Scan(&investmentAmount);
-			
-			fmt.Print("Enter your expected return rate, example: '5.5': ");
-			fmt.Scan(&expectedReturnRate);
-			
-			fmt.Print("Enter the period in periodInYears: ");
-			fmt.Scan(&periodInYears);
-		
-			var value, err = calculateInvestment(investmentAmount, expectedReturnRate, periodInYears);
-			
-			if err != nil {
-				log.Fatal(err.Error())
-			}
 
-			if value == 0 {
-				println("ok")
+			var err error;
+			investmentAmount, err := getFloatValue("investment amount");
+			if err != nil {
+				log.Print(err.Error());
+				continue;
 			}
+			expectedReturnRate, err := getFloatValue("expected return rate (example: 5.5)");
+			if err != nil {
+				log.Print(err.Error());
+				continue;
+			}
+			periodInYears, err := getFloatValue("period in years");
+			if err != nil {
+				log.Print(err.Error());
+				continue;
+			}
+		
+			calculateInvestment(investmentAmount, expectedReturnRate, periodInYears);
 
 			fmt.Println(string(checkMark));
 			choice = 0;
