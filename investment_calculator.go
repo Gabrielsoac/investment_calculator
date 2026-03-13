@@ -5,7 +5,13 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"os"
+	"time"
 )
+
+func writeCalculateHistoryDate(){
+	os.WriteFile("history.txt", []byte("Last calc — date: " + fmt.Sprint(time.Now().Format(time.RFC3339))), 0644);
+}
 
 func calculateFutureValue (investmentAmount float64, expectedReturnRate float64, periodInYears float64) float64 {
 	 return investmentAmount * math.Pow(1 + expectedReturnRate / 100, periodInYears);
@@ -39,6 +45,8 @@ func profitCalculator(
 	var profit = calculateProfit(ebt, taxRate);
 	var ratio = calculateRatio(ebt, profit);
 
+
+	writeCalculateHistoryDate()
 	fmt.Printf("\n####### PROFIT RESULT #########\nYour ebt: R$%.2f\nYour profit: R$%.2f\nYour ratio: R$%.2f\n", ebt, profit, ratio,
 	);
 }
@@ -95,9 +103,7 @@ func main() {
 			}
 			
 			profitCalculator(renenue, expenses, taxRate);
-		}
-
-		if(choice == 2){
+		} else if(choice == 2){
 			checkMark := rune(0x2705);
 
 			var err error;
@@ -121,11 +127,11 @@ func main() {
 
 			fmt.Println(string(checkMark));
 			choice = 0;
-		}
-
-		if(choice == 3){
+		} else if(choice == 3){
 			goodbyeMessage := fmt.Sprintln("Goodbye :)");
 			fmt.Print(goodbyeMessage);
+		} else {
+			fmt.Println("Please, enter the valid option! :) ")
 		}
 	}
 }
