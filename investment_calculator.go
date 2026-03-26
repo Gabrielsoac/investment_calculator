@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+
+	"example.com/investment-calculator/fileops"
 )
 
 func getFloatValue(fieldName string) (value float64, err error) {
@@ -14,6 +16,8 @@ func getFloatValue(fieldName string) (value float64, err error) {
 	}
 	return;
 }
+
+const historyFileName = "history.txt";
 
 func main() {
 	var choice = 0;
@@ -70,7 +74,7 @@ func main() {
 			goodbyeMessage := fmt.Sprintln("Goodbye :)");
 			fmt.Print(goodbyeMessage);
 		} else if(choice == 4){
-			lastCalcDateMessage := getLastCalcDate();
+			lastCalcDateMessage := fileops.ReadLastCalcDateOnFile(historyFileName);
 			fmt.Println(lastCalcDateMessage);
 		} else {
 			fmt.Println("Please, enter the valid option! :) ")

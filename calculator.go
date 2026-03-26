@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math"
+
+	"example.com/investment-calculator/fileops"
 )
 
 func calculateFutureValue (investmentAmount float64, expectedReturnRate float64, periodInYears float64) float64 {
@@ -38,7 +40,7 @@ func profitCalculator(
 	var ratio = calculateRatio(ebt, profit);
 
 
-	writeCalculateHistoryDate()
+	fileops.WriteCalculateHistoryDateOnFile(historyFileName)
 	fmt.Printf("\n####### PROFIT RESULT #########\nYour ebt: R$%.2f\nYour profit: R$%.2f\nYour ratio: R$%.2f\n", ebt, profit, ratio,
 	);
 }
